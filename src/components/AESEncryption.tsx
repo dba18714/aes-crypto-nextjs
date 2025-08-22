@@ -429,7 +429,7 @@ export function AESEncryption() {
               </button>
             )}
           </div>
-          <div className={`whitespace-pre-wrap font-mono text-sm ${
+          <div className={`whitespace-pre-wrap font-mono text-sm break-words overflow-wrap-anywhere ${
             result.type === 'error' ? 'text-red-700' : 'text-green-700'
           }`}>
             {result.message}
@@ -440,7 +440,7 @@ export function AESEncryption() {
                 📄 JSON 输出 (点击展开/收起)
               </summary>
               <div className="mt-2 p-3 bg-gray-100 rounded border overflow-auto">
-                <pre className="text-xs font-mono text-gray-800">
+                <pre className="text-xs font-mono text-gray-800 whitespace-pre-wrap break-words">
                   {JSON.stringify(result.jsonData, null, 2)}
                 </pre>
               </div>
