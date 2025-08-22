@@ -15,6 +15,7 @@ interface ResultState {
   message: string
   type: 'success' | 'error'
   jsonData?: object
+  ciphertext?: string
 }
 
 export function AESEncryption() {
@@ -161,7 +162,8 @@ export function AESEncryption() {
       setResult({
         message: `16进制密文：\n${hexCipher}\n\nIV（16进制）：\n${ivHex || '无（ECB模式）'}`,
         type: 'success',
-        jsonData: jsonOutput
+        jsonData: jsonOutput,
+        ciphertext: hexCipher
       })
       
     } catch (error) {
@@ -251,6 +253,18 @@ export function AESEncryption() {
     try {
       await navigator.clipboard.writeText(JSON.stringify(result.jsonData, null, 2))
       alert('JSON 输出已复制到剪贴板')
+    } catch {
+      alert('无法访问剪贴板')
+    }
+  }
+
+  // 复制密文到剪贴板
+  const copyCiphertextToClipboard = async () => {
+    if (!result?.ciphertext) return
+    
+    try {
+      await navigator.clipboard.writeText(result.ciphertext)
+      alert('密文已复制到剪贴板')
     } catch {
       alert('无法访问剪贴板')
     }
@@ -421,12 +435,22 @@ export function AESEncryption() {
               {result.type === 'error' ? '❌ 错误' : '✅ 结果'}
             </h3>
             {result.type === 'success' && result.jsonData && (
-              <button
-                onClick={copyJsonToClipboard}
-                className="px-3 py-1 bg-blue-500 text-white text-xs rounded hover:bg-blue-600 transition-colors"
-              >
-                📋 复制JSON
-              </button>
+              <div className="flex gap-2">
+                <button
+                  onClick={copyJsonToClipboard}
+                  className="px-3 py-1 bg-blue-500 text-white text-xs rounded hover:bg-blue-600 transition-colors"
+                >
+                  📋 复制JSON
+                </button>
+                {result.ciphertext && (
+                  <button
+                    onClick={copyCiphertextToClipboard}
+                    className="px-3 py-1 bg-green-500 text-white text-xs rounded hover:bg-green-600 transition-colors"
+                  >
+                    🔐 复制密文
+                  </button>
+                )}
+              </div>
             )}
           </div>
           <div className={`whitespace-pre-wrap font-mono text-sm break-words overflow-wrap-anywhere ${
